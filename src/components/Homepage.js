@@ -1,11 +1,17 @@
 import React from "react";
-import { TagsInput } from "./TagsInput";
-import "./index.css";
+import { useTagsInput } from "../hooks/useTagsInput";
 
 export const Homepage = () => {
+  const {
+    removeItem,
+    addItem,
+    getCurrentItem,
+    currentIndex,
+    currentTag,
+    tags,
+    DefaultUi,
+  } = useTagsInput();
   return (
-    <div>
-      <TagsInput />
-    </div>
+    <div style={{ padding: "20px" }}>{DefaultUi("Enter Fruits", true)}</div>
   );
 };
