@@ -29,6 +29,23 @@ span.tag-chip {
   align-items: center;
   column-gap: 3px;
 }
+span.tag-chip[data-hidden="hide"] {
+  display: none;
+}
+span.tag-chip + button {
+  outline: none;
+  border: none;
+  border-radius: 20px;
+  padding-inline: 10px;
+  cursor: pointer;
+  color: #555;
+}
+span.tag-chip + button:hover {
+  color: #000;
+}
+span.tag-chip + button:focus {
+  outline: 2px solid #555;
+}
 svg.close {
   cursor: pointer;
 }
