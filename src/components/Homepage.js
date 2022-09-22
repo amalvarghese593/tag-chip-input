@@ -11,7 +11,10 @@ export const Homepage = () => {
     tags,
     DefaultUi,
   } = useTagsInput();
+
   return (
-    <div style={{ padding: "20px" }}>{DefaultUi("Enter Fruits", true, 6)}</div>
+    <>
+      <div>{DefaultUi("Enter Fruits", true, 6)}</div>
+    </>
   );
 };
