@@ -2,10 +2,10 @@ import React, { useState, useEffect, useRef } from "react";
 import { useEventListener } from "./useEventListener";
 import "./index.css";
 
-export const useTagsInput = () => {
+export const useTagsInput = (initialTags = []) => {
   const inputRef = useRef();
   const tagsWrapperRef = useRef();
-  const [tags, setTags] = useState([]);
+  const [tags, setTags] = useState(initialTags);
   const [currentTag, setCurrentTag] = useState("");
   // const tagsRef = useRef([]);
   const [currentIndex, setCurrentIndex] = useState();

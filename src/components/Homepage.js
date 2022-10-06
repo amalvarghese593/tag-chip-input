@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { useTagsInput } from "../hooks/useTagsInput";
 
 export const Homepage = () => {
+  const [initialTags, setInitialTags] = useState(["Apple", "Mango", "Orange"]);
   const {
     removeItem,
     addItem,
@@ -10,7 +11,7 @@ export const Homepage = () => {
     currentTag,
     tags,
     DefaultUi,
-  } = useTagsInput();
+  } = useTagsInput(initialTags);
 
   return (
     <>
