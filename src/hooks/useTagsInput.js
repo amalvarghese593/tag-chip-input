@@ -3,6 +3,7 @@ import { useEventListener } from "./useEventListener";
 import "./index.css";
 
 export const useTagsInput = () => {
+  const inputRef = useRef();
   const tagsWrapperRef = useRef();
   const [tags, setTags] = useState([]);
   const [currentTag, setCurrentTag] = useState("");
@@ -109,8 +110,10 @@ export const useTagsInput = () => {
       <div className="tags-cntr tags-d-flex">
         {isTagsInside && (
           <Tags
+            inputRef={inputRef}
             tags={tags}
             currentIndex={currentIndex}
+            setCurrentIndex={setCurrentIndex}
             removeItem={removeItem}
             isShowTags={isShowTags}
             setIsShowTags={setIsShowTags}
@@ -118,6 +121,7 @@ export const useTagsInput = () => {
           />
         )}
         <input
+          ref={inputRef}
           type="text"
           placeholder={placeholder}
           value={currentTag}
@@ -129,8 +133,10 @@ export const useTagsInput = () => {
       {!isTagsInside && (
         <div className="tags-d-flex">
           <Tags
+            inputRef={inputRef}
             tags={tags}
             currentIndex={currentIndex}
+            setCurrentIndex={setCurrentIndex}
             removeItem={removeItem}
             isShowTags={isShowTags}
             setIsShowTags={setIsShowTags}
@@ -155,31 +161,40 @@ export const useTagsInput = () => {
 const Tags = ({
   tags,
   currentIndex,
+  setCurrentIndex,
   removeItem,
   isShowTags,
   setIsShowTags,
   tagsCountLimit,
-}) => (
-  <>
-    {tags.map((el, idx) => (
-      <span
-        key={idx}
-        className={`tag-chip ${idx === currentIndex ? "highlight" : ""}`}
-        data-hidden={
-          !isShowTags && tags.length - idx > tagsCountLimit ? "hide" : ""
-        }
-      >
-        {el}
-        <CloseIcon onClick={() => removeItem(el)} />
-      </span>
-    ))}
-    {tags.length > tagsCountLimit && (
-      <button onClick={() => setIsShowTags((prev) => !prev)}>
-        Show {!isShowTags ? "more" : "less"}...
-      </button>
-    )}
-  </>
-);
+  inputRef,
+}) => {
+  const handleShow = () => {
+    setIsShowTags((prev) => !prev);
+    inputRef.current?.focus();
+    setCurrentIndex(undefined);
+  };
+  return (
+    <>
+      {tags.map((el, idx) => (
+        <span
+          key={idx}
+          className={`tag-chip ${idx === currentIndex ? "highlight" : ""}`}
+          data-hidden={
+            !isShowTags && tags.length - idx > tagsCountLimit ? "hide" : ""
+          }
+        >
+          {el}
+          <CloseIcon onClick={() => removeItem(el)} />
+        </span>
+      ))}
+      {tags.length > tagsCountLimit && (
+        <button onClick={handleShow}>
+          Show {!isShowTags ? "more" : "less"}...
+        </button>
+      )}
+    </>
+  );
+};
 
 const CloseIcon = (props) => (
   <svg
