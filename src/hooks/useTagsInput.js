@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useEventListener } from "./useEventListener";
 import "./index.css";
 
-export const useTagsInput = (initialTags = []) => {
+export const useTagsInput = (initialTags = [], tagsInputCntrRef) => {
   const inputRef = useRef();
   const tagsWrapperRef = useRef();
   const [tags, setTags] = useState(initialTags);
@@ -12,7 +12,9 @@ export const useTagsInput = (initialTags = []) => {
   const [isShowTags, setIsShowTags] = useState(false);
 
   const onClickOutside = (e) => {
-    if (!tagsWrapperRef.current.contains(e.target)) {
+    const cntrRef = tagsInputCntrRef || tagsWrapperRef;
+    if (!cntrRef.current?.contains(e.target)) {
+      console.log("clicked outside");
       setIsShowTags(false);
     }
   };
@@ -33,7 +35,6 @@ export const useTagsInput = (initialTags = []) => {
       setIsShowTags(false);
     }
   };
-
   const addItem = (e, tagsCountLimit) => {
     if (e.key === "Enter" && currentTag) {
       setTags((prev) => {
@@ -106,7 +107,11 @@ export const useTagsInput = (initialTags = []) => {
     isTagsInside = false,
     tagsCountLimit = 6
   ) => (
-    <div ref={tagsWrapperRef} className="d-inl-blk">
+    <div
+      ref={tagsWrapperRef}
+      style={{ border: "1px solid #000" }}
+      className="d-inl-blk"
+    >
       <div className="tags-cntr tags-d-flex">
         {isTagsInside && (
           <Tags
@@ -152,8 +157,11 @@ export const useTagsInput = (initialTags = []) => {
     addItem,
     getCurrentItem,
     currentIndex,
+    setCurrentIndex,
     currentTag,
     tags,
+    isShowTags,
+    setIsShowTags,
     DefaultUi,
   };
 };
