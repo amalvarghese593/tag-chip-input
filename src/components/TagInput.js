@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import { TagsContext, useTagsContext } from "../context/TagsContext";
 import { useTagsInput } from "../hooks/useTagsInput";
 import "./index.css";
@@ -9,14 +9,13 @@ export const TagInput = ({
   onKeyDown = () => {},
   onHandleShow = () => {},
   error,
-  initialValues = [],
+  value: tags,
+  setTags,
   tagsLimit = 6,
   placeholder = "Enter",
-  isTagsInside = true,
   children,
 }) => {
   const tagsInputCntrRef = useRef();
-  const [isTouched, setIsTouched] = useState(false);
   const {
     removeItem,
     addItem,
@@ -24,51 +23,39 @@ export const TagInput = ({
     currentIndex,
     setCurrentIndex,
     currentTag,
-    tags,
     isShowTags,
     setIsShowTags,
-    // DefaultUi,
-  } = useTagsInput(initialValues, tagsInputCntrRef);
-
-  React.useEffect(() => {
-    console.log({ isShowTags });
-  }, [isShowTags]);
+  } = useTagsInput(tags, setTags, tagsInputCntrRef);
 
   return (
-    <TagsContext.Provider value={{ removeItem, tags, tagsLimit, isShowTags }}>
-      <div style={{ border: "1px solid red" }} ref={tagsInputCntrRef}>
-        {React.Children.map(children, (el, idx) =>
-          React.cloneElement(el, {
-            onBlur,
-            onChange,
-            onKeyDown,
-            onHandleShow,
-            error,
-            initialValues,
-            tagsLimit,
-            placeholder,
-            isTagsInside,
-            // removeItem,
-            addItem,
-            getCurrentItem,
-            currentIndex,
-            setCurrentIndex,
-            currentTag,
-            tags,
-            isShowTags,
-            setIsShowTags,
-            isTouched,
-            setIsTouched,
-          })
-        )}
-      </div>
+    <TagsContext.Provider
+      value={{
+        removeItem,
+        tags,
+        tagsLimit,
+        isShowTags,
+        onBlur,
+        onChange,
+        onKeyDown,
+        onHandleShow,
+        error,
+        placeholder,
+        addItem,
+        getCurrentItem,
+        currentIndex,
+        setCurrentIndex,
+        currentTag,
+        setIsShowTags,
+      }}
+    >
+      <div ref={tagsInputCntrRef}>{children}</div>
     </TagsContext.Provider>
   );
 };
+const Label = ({ children }) => <label>{children}</label>;
+TagInput.Label = Label;
 
-const Tags = ({ tags, children }) => {
-  return children(tags);
-};
+const Tags = ({ children }) => <>{children}</>;
 TagInput.Tags = Tags;
 
 const Tag = ({ value, idx, children }) => {
@@ -100,15 +87,15 @@ const CloseBtn = ({ component: Component, value }) => {
 };
 TagInput.CloseBtn = CloseBtn;
 
-const ShowBtn = ({
-  tags,
-  tagsLimit,
-  onHandleShow,
-  isShowTags,
-  setIsShowTags,
-  setCurrentIndex,
-  inputRef,
-}) => {
+const ShowBtn = ({ inputRef }) => {
+  const {
+    tags,
+    tagsLimit,
+    onHandleShow,
+    isShowTags,
+    setIsShowTags,
+    setCurrentIndex,
+  } = useTagsContext();
   const handleClick = (e) => {
     onHandleShow(e);
     setIsShowTags((prev) => !prev);
@@ -125,7 +112,7 @@ const ShowBtn = ({
 };
 TagInput.ShowBtn = ShowBtn;
 
-const Input = React.forwardRef((props, ref) => {
+const Input = React.forwardRef((_, ref) => {
   const {
     placeholder,
     currentTag,
@@ -135,8 +122,8 @@ const Input = React.forwardRef((props, ref) => {
     onChange,
     onBlur,
     onKeyDown,
-    setIsTouched,
-  } = props;
+  } = useTagsContext();
+
   const handleKeyDown = (e) => {
     addItem(e, tagsLimit);
     onKeyDown(e);
@@ -144,10 +131,6 @@ const Input = React.forwardRef((props, ref) => {
   const handleChange = (e) => {
     getCurrentItem(e);
     onChange(e);
-  };
-  const handleBlur = (e) => {
-    onBlur(e);
-    setIsTouched(true);
   };
   return (
     <input
@@ -157,16 +140,16 @@ const Input = React.forwardRef((props, ref) => {
       value={currentTag}
       onChange={handleChange}
       onKeyDown={handleKeyDown}
-      onBlur={handleBlur}
-      //   className="tag-input"
+      onBlur={onBlur}
     />
   );
 });
 TagInput.Input = Input;
 
-const Error = ({ error, isTouched, tags }) => {
-  return isTouched && !tags.length ? (
-    <span style={{ color: "red", fontSize: "12px" }}>{error}</span>
+const Error = () => {
+  const { error, tags } = useTagsContext();
+  return error && !tags.length ? (
+    <span className="field-error">{error}</span>
   ) : undefined;
 };
 TagInput.Error = Error;

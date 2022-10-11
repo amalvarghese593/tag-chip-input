@@ -74,5 +74,12 @@ input.tag-input {
   color: red;
   font-size: 12px;
   text-transform: capitalize;
-  border: 1px solid red;
+}
+.tags-wpr {
+  position: relative;
+}
+.tags-wpr .field-error {
+  position: absolute;
+  left: 5px;
+  bottom: -20px;
 }

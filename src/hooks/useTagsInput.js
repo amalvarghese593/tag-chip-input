@@ -2,19 +2,25 @@ import React, { useState, useEffect, useRef } from "react";
 import { useEventListener } from "./useEventListener";
 import "./index.css";
 
-export const useTagsInput = (initialTags = [], tagsInputCntrRef) => {
+export const useTagsInput = (
+  // initialTags = [],
+  tags = [],
+  setTags = () => {},
+  tagsInputCntrRef,
+  error = undefined
+) => {
   const inputRef = useRef();
   const tagsWrapperRef = useRef();
-  const [tags, setTags] = useState(initialTags);
+  // const [tags, setTags] = useState(initialTags);
   const [currentTag, setCurrentTag] = useState("");
   // const tagsRef = useRef([]);
   const [currentIndex, setCurrentIndex] = useState();
   const [isShowTags, setIsShowTags] = useState(false);
+  const [isTouched, setIsTouched] = useState(false);
 
   const onClickOutside = (e) => {
     const cntrRef = tagsInputCntrRef || tagsWrapperRef;
     if (!cntrRef.current?.contains(e.target)) {
-      console.log("clicked outside");
       setIsShowTags(false);
     }
   };
@@ -107,11 +113,7 @@ export const useTagsInput = (initialTags = [], tagsInputCntrRef) => {
     isTagsInside = false,
     tagsCountLimit = 6
   ) => (
-    <div
-      ref={tagsWrapperRef}
-      style={{ border: "1px solid #000" }}
-      className="d-inl-blk"
-    >
+    <div ref={tagsWrapperRef} className="d-inl-blk tags-wpr">
       <div className="tags-cntr tags-d-flex">
         {isTagsInside && (
           <Tags
@@ -132,9 +134,13 @@ export const useTagsInput = (initialTags = [], tagsInputCntrRef) => {
           value={currentTag}
           onChange={getCurrentItem}
           onKeyDown={(e) => addItem(e, tagsCountLimit)}
+          onBlur={() => setIsTouched(true)}
           className="tag-input"
         />
       </div>
+      {error && isTouched && !tags.length && (
+        <span className="field-error">{error}</span>
+      )}
       {!isTagsInside && (
         <div className="tags-d-flex">
           <Tags
@@ -159,7 +165,7 @@ export const useTagsInput = (initialTags = [], tagsInputCntrRef) => {
     currentIndex,
     setCurrentIndex,
     currentTag,
-    tags,
+    // tags,
     isShowTags,
     setIsShowTags,
     DefaultUi,

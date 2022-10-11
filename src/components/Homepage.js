@@ -1,60 +1,77 @@
 import React, { useState, useRef } from "react";
-import { TagInput } from "./TagInput";
-import { TagsChipInput } from "./TagsChipInput";
+import { TagChipInputNew } from "./TagChipInputNew";
+// import { TagInput } from "./TagInput";
+// import { TagsChipInput } from "./TagsChipInput";
 
 export const Homepage = () => {
-  const [initialTags, setInitialTags] = useState(["Apple", "Mango", "Orange"]);
-  const [error, setError] = useState("Required field!");
-  const inputRef = useRef();
+  const [tags, setTags] = useState(["Apple", "Mango", "Orange"]);
+  const [error, setError] = useState("required field!");
+  // const inputRef = useRef();
+  const [touched, setTouched] = useState(false);
 
-  const onChange = (e) => console.log("change", e);
-  const onBlur = (e) => console.log("blur", e);
-  const onKeyDown = (e) => console.log("keydown", e);
-  const onHandleShow = (e) => console.log("handle show", e);
+  const onChange = (e) => {};
+  const onBlur = (e) => {
+    setTouched(true);
+  };
+  const onKeyDown = (e) => {};
+  const onHandleShow = (e) => {};
   return (
     <>
-      {/* <TagsChipInput
-        onBlur={onBlur}
-        onChange={onChange}
-        error={error}
-        initialValues={initialTags}
+      <TagChipInputNew
+        error={touched && error}
+        value={tags}
+        setTags={setTags}
         tagsLimit={6}
         placeholder="Enter fruits"
         isTagsInside
-      /> */}
-      <TagInput
+        label="Fruits"
+        component={{
+          CloseButton: CloseIcon,
+        }}
+        // isDefaultUi
         onBlur={onBlur}
         onChange={onChange}
         onKeyDown={onKeyDown}
         onHandleShow={onHandleShow}
+      />
+      {/* <TagsChipInput
         error={error}
-        initialValues={initialTags}
+        value={tags}
+        setTags={setTags}
         tagsLimit={6}
         placeholder="Enter fruits"
         isTagsInside
+      /> */}
+      {/* <TagInput
+        onBlur={onBlur}
+        onChange={onChange}
+        onKeyDown={onKeyDown}
+        onHandleShow={onHandleShow}
+        error={touched && error}
+        value={tags}
+        setTags={setTags}
+        tagsLimit={6}
+        placeholder="Enter fruits"
       >
+        <TagInput.Label>Fruits</TagInput.Label>
         <TagInput.Tags>
-          {(tags) =>
-            tags.map((tag, idx) => (
-              <TagInput.Tag key={idx} idx={idx} value={tag}>
-                <TagInput.CloseBtn
-                  component={{
-                    CloseButton: CloseIcon,
-                  }}
-                />
-              </TagInput.Tag>
-            ))
-          }
+          {tags.map((tag, idx) => (
+            <TagInput.Tag key={idx} idx={idx} value={tag}>
+              <TagInput.CloseBtn
+                component={{
+                  CloseButton: CloseIcon,
+                }}
+              />
+            </TagInput.Tag>
+          ))}
         </TagInput.Tags>
         <TagInput.ShowBtn inputRef={inputRef} />
         <TagInput.Input ref={inputRef} />
         <TagInput.Error />
-      </TagInput>
+      </TagInput> */}
     </>
   );
 };
-
-//onblur, onchange, error, initialvalues, useDefaultUi
 
 const CloseIcon = (props) => {
   return (
